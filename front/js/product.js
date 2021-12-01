@@ -1,7 +1,7 @@
 let params = new URLSearchParams(document.location.search.substring(1));
 let varId = params.get("_id");
 var str = "http://localhost/Kanap/front/html/product.html?_id="+ varId;
-    
+  
 // Fonction permettant l'affichage d'un canapé unique sur la page produit
 function viewIdProduct(){
 
@@ -15,6 +15,9 @@ function viewIdProduct(){
         .then(response => response.json()) 
         .then(data  => {
             console.log(data)
+
+            
+
             //On change le titre de l'onglet en mettant le nom du canapé choisi
             document.querySelector('title').innerHTML = data.name;
 
@@ -59,27 +62,24 @@ function viewIdProduct(){
 // On retourne le canapé avec l'id unique
 viewIdProduct();
 
+
 //On ajoute une fonction pour ajouter au panier
 function addCart(){
-    
+    fetch("http://localhost:3000/api/products/"+ varId)
+    .then(response => response.json()) 
+    .then(data  => {
     
     let inputColors = document.getElementById("colors");
     inputColors.addEventListener('change', (event) => {
-        inputColors = event.target.value;
-            //On implémente la valeur choisie dans le tableau grâce à son index "1"  
-            
-            console.log(inputColors);
-            
+        inputColors = event.target.value;  
+            console.log(inputColors);  
     });
 
     //On récupère la valeur du champ input quantité
     let inputQuantity = document.getElementById("quantity");
     inputQuantity.addEventListener('change', (event) => {
-        inputQuantity = event.target.value;
-            //On implémente la valeur choisie dans le tableau grâce à son index "2"  
-            
-            console.log(inputQuantity);
-            
+        inputQuantity = event.target.value;   
+            console.log(inputQuantity);  
     });
         
             
@@ -88,35 +88,43 @@ function addCart(){
     addToCart.addEventListener("click", () => {
         //On créer l'objet qui va contenir les valeurs du produit pour l'ajout au panier
         let arrayCart = {
-            name: "Kanap",
+            name: data.name,
+            img: data.imageUrl,
+            price: data.price,
             id: varId,
             colors: inputColors,
             quantity: inputQuantity,
         };
 
-
+       
         //---Local storage qui va permettre la sauvegarde des produits enregistré dans le panier
-
 
         //Déclaration de la variable de récupération du localstorage
         let savedProductStorage = JSON.parse(localStorage.getItem("cart"));
 
-        //Conditions pour voir si le produit est déjà dans le panier ou pas
+        //Fonction permettant d'éviter un doulon et des répétitions avec la même id/couleur dans le tableau donc dans le localstorage
+        function noDoublons(array) {
+            return array.reduce(function (p, keyName) {
+              var keys = [keyName.id, keyName.colors].join('|');
+              if (p.temp.indexOf(keys) === -1) {
+                p.out.push(keyName);
+                p.temp.push(keys);
+              }
+              return p;
+            }, { temp: [], out: [] }).out;
+          }
+        
+          
+        //Conditions pour voir si le produit est déjà dans le panier ou pas avec la fonction Nodoublons
         if(savedProductStorage){
-            if(arrayCart.id === savedProductStorage.indexOf(varId)){
-                
-                console.log(savedProductStorage[{varId}]);
-            }
+            
             savedProductStorage.push(arrayCart);
-            localStorage.setItem("cart", JSON.stringify(savedProductStorage));
-            console.log(savedProductStorage);
+            localStorage.setItem("cart", JSON.stringify(noDoublons(savedProductStorage)));
         }
         else{
-           
             savedProductStorage = [];
             savedProductStorage.push(arrayCart);
             localStorage.setItem("cart", JSON.stringify(savedProductStorage));
-            console.log(savedProductStorage);
         }
         
         
@@ -124,8 +132,8 @@ function addCart(){
         console.log(arrayCart)    
         
         
-        
     })     
+})
 }
 addCart();
 
