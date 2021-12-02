@@ -150,17 +150,25 @@ function send(e) {
     email: mail
   }
   console.log(contact);
-  const promise1 = fetch("./confirmation.html", {
+  const promise1 = fetch("http://localhost:3000/api/products/order", {
     method: "POST",
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({contact})
+    body: JSON.stringify(contact),
   })
-  .then(response => response.json()) 
-.then(console.log(contact))
-  .catch(err => console.log(err))
+  promise1.then(async(response) =>{
+    try{
+      console.log(response)
+      const contenu = await response.json();
+      console.log(contenu);
+    }
+    catch(e){
+      console.log(e)
+    }
+  })
+  
   
 }
 
