@@ -113,7 +113,7 @@ function supprCommand(){
 }
 supprCommand();
 
-
+//Déclaration des variables pour le formulaire
 let prenom = document.getElementById("firstName");
     prenom.addEventListener('input', (event) => {
         prenom = event.target.value;   
@@ -139,16 +139,19 @@ let prenom = document.getElementById("firstName");
         mail = event.target.value;   
             console.log(mail);  
     });
-  
+//Foncion permettant l'envoi du formulaire sur le serveur 
 function send(e) {
   e.preventDefault();
+  product = noDoublons(savedProductStorage);
   let contact = {
     firstName: prenom,
     lastName: nom,
     address: adresse,
     city: ville,
-    email: mail
+    email: mail,
+    products: product
   }
+  
   console.log(contact);
   const promise1 = fetch("http://localhost:3000/api/products/order", {
     method: "POST",
@@ -171,5 +174,4 @@ function send(e) {
   
   
 }
-
 document.querySelector(".cart__order__form").addEventListener("submit", send);
