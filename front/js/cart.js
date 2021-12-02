@@ -142,24 +142,31 @@ let prenom = document.getElementById("firstName");
 //Foncion permettant l'envoi du formulaire sur le serveur 
 function send(e) {
   e.preventDefault();
-  product = noDoublons(savedProductStorage);
   let contact = {
     firstName: prenom,
     lastName: nom,
     address: adresse,
     city: ville,
     email: mail,
-    products: product
   }
+  let products = [];
+  savedProductStorage.forEach(row => {
+    let productId = row.id;
+    products.push(productId);
+  });
   
-  console.log(contact);
+  let productContact = {
+    contact,
+    products,
+  }
+  console.log(productContact);
   const promise1 = fetch("http://localhost:3000/api/products/order", {
     method: "POST",
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(contact),
+    body: JSON.stringify(productContact),
   })
   promise1.then(async(response) =>{
     try{
@@ -174,4 +181,5 @@ function send(e) {
   
   
 }
+
 document.querySelector(".cart__order__form").addEventListener("submit", send);
