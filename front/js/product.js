@@ -62,6 +62,14 @@ function viewIdProduct(){
 // On retourne le canapé avec l'id unique
 viewIdProduct();
 
+function confirmCart(){
+    let result = confirm("Produit ajouté au panier avec succès, redirection vers le panier ?");
+    if (result == true){
+        location.href = "./cart.html";
+    }else {
+        location.href = "./index.html";
+    }
+}
 
 //On ajoute une fonction pour ajouter au panier
 function addCart(){
@@ -130,7 +138,7 @@ function addCart(){
         
         //Affichage de l'ajout panier dans la console
         console.log(arrayCart)    
-        
+        confirmCart();
         
     })     
 })
