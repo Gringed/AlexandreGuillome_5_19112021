@@ -1,4 +1,3 @@
-//Incrémentation de la fonction évitant la répétition de doublons
 function noDoublons(array) {
   if(savedProductStorage){
     return array.reduce(function (p, keyName) {
@@ -8,8 +7,8 @@ function noDoublons(array) {
       p.temp.push(keys);
     }
     return p;
-  }, { temp: [], out: [] }).out;
-}
+    }, { temp: [], out: [] }).out;
+  }
 }
 let savedProductStorage = JSON.parse(localStorage.getItem("cart"));
 
@@ -30,27 +29,27 @@ function viewCart(){
   
   document.getElementById("cart__items").innerHTML += `
   <article class="cart__item" data-id="${product.id}" data-color="${product.colors}">
-              <div class="cart__item__img">
-                <img src="${product.img}" alt="Photographie d'un canapé">
-              </div>
-              <div class="cart__item__content">
-                <div class="cart__item__content__description">
-                  <h2>${product.name}</h2>
-                  <p>${product.colors}</p>
-                  <p>${product.price} €</p>
-                </div>
-                <div class="cart__item__content__settings">
-                  <div class="cart__item__content__settings__quantity">
-                    <p>Quantité : </p>
-                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.quantity}">
-                  </div>
-                  <div class="cart__item__content__settings__delete">
-                    <p class="deleteItem">Supprimer</p>
-                  </div>
-                </div>
-              </div>
+    <div class="cart__item__img">
+      <img src="${product.img}" alt="Photographie d'un canapé">
+    </div>
+    <div class="cart__item__content">
+      <div class="cart__item__content__description">
+        <h2>${product.name}</h2>
+        <p>${product.colors}</p>
+        <p>${product.price} €</p>
+      </div>
+      <div class="cart__item__content__settings">
+        <div class="cart__item__content__settings__quantity">
+          <p>Quantité : </p>
+          <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.quantity}">
+        </div>
+        <div class="cart__item__content__settings__delete">
+          <p class="deleteItem">Supprimer</p>
+        </div>
+      </div>
+    </div>
   </article>
-  `;  
+  `;
     //Total du prix et des articles présents dans le panier
     let totalPrice = 0;
     savedProductStorage.forEach(row => {
@@ -60,27 +59,28 @@ function viewCart(){
     let articlesCount = noDoublons(savedProductStorage).length;
     document.getElementById("totalQuantity").innerHTML = articlesCount;
     document.getElementById("totalPrice").innerHTML = totalPrice;
+    
     }    
   }
 }
 viewCart();
 
-
-
 //Fonction permettant le changement de quantité du produit et sauvegarder dans le localstorage la nouvelle quantité
 function updateQuantity(){
-let itemQuantity = document.querySelectorAll(".itemQuantity");
-  console.log(itemQuantity)
-  for (let l = 0; l < itemQuantity.length; l++){
-    itemQuantity[l].addEventListener("change", (event) =>{
-    let changeQuantity = event.target.value;
-      console.log(changeQuantity);
-    
+
+  let itemQuantity = document.querySelectorAll(".itemQuantity");
+  for (let ind = 0; ind < itemQuantity.length; ind++){
+    itemQuantity[ind].addEventListener("change", (event) =>{
+    event.preventDefault();
+      let changeQuantity = event.target.value
+      changeQuantity[ind] += itemQuantity[ind];
+      savedProductStorage[ind].quantity = changeQuantity;
     
     localStorage.setItem("cart", JSON.stringify(savedProductStorage));
-    
-    })
+    window.location.href = "cart.html";
+   })
   }
+ 
 }
 updateQuantity();
 
@@ -96,10 +96,8 @@ function supprCommand(){
 
     let id_suppression = savedProductStorage[i].id;
     let colors_suppression = savedProductStorage[i].colors;
-      console.log(id_suppression);
 
     savedProductStorage = savedProductStorage.filter(el => el.id !== id_suppression || el.colors !== colors_suppression)
-    console.log(savedProductStorage);
 
     localStorage.setItem("cart", JSON.stringify(savedProductStorage));
     alert("Ce produit a été supprimer du panier");
@@ -113,27 +111,22 @@ supprCommand();
 let prenom = document.getElementById("firstName");
     prenom.addEventListener('input', (event) => {
     prenom = event.target.value;   
-        console.log(prenom);  
 });
 let nom = document.getElementById("lastName");
     nom.addEventListener('input', (event) => {
     nom = event.target.value;   
-        console.log(nom);  
 });
 let adresse = document.getElementById("address");
     adresse.addEventListener('input', (event) => {
     adresse = event.target.value;   
-        console.log(adresse);  
 });
 let ville = document.getElementById("city");
     ville.addEventListener('input', (event) => {
     ville = event.target.value;   
-        console.log(ville);  
 });
 let mail = document.getElementById("email");
     mail.addEventListener('input', (event) => {
     mail = event.target.value;   
-        console.log(mail);  
 });
 //Foncion permettant l'envoi du formulaire sur le serveur 
 function send(e) {
@@ -160,7 +153,6 @@ function send(e) {
     contact,
     products,
   }
-  console.log(productContact);
   
   const regexFirstLastNameCity = (value) => {
     return /^[a-zA-Z0-9\séè-]{3,25}$/.test(value);
@@ -171,7 +163,7 @@ function send(e) {
   const regexMail = (value) => {
     return /^[a-zA-Z0-9.! #$%&'*+/=? ^_`{|}~-]+@[a-zA-Z0-9-]+.+[a-zA-Z0-9-]$/.test(value);
   }
-
+  //Fonction qui test le champ Prenom
   function checkPrenom(){
     const prenom = contact.firstName;
     if(regexFirstLastNameCity(prenom)){
@@ -182,6 +174,7 @@ function send(e) {
       return false;
     }
   }
+  //Fonction qui test le champ Nom
   function checkNom(){
     const nom = contact.lastName;
     if(regexFirstLastNameCity(nom)){
@@ -192,6 +185,7 @@ function send(e) {
       return false;
     }
   }
+  //Fonction qui test le champ Adresse
   function checkAdress(){
     const address = contact.address;
     if(regexAddress(address)){
@@ -202,6 +196,7 @@ function send(e) {
       return false;
     }
   }
+  //Fonction qui test le champ Ville
   function checkCity(){
     const city = contact.city;
     if(regexFirstLastNameCity(city)){
@@ -212,6 +207,7 @@ function send(e) {
       return false;
     }
   }
+  //Fonction qui test le champ Email
   function checkEmail(){
     const email = contact.email;
     if(regexMail(email)){
@@ -245,6 +241,6 @@ function send(e) {
     }
   })
 }
-  }
+}
 }
 document.querySelector(".cart__order__form").addEventListener("submit", send);
