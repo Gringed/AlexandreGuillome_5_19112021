@@ -88,26 +88,28 @@ function addCart(){
             colors: inputColors,
             quantity: inputQuantity,
         };
-
+        
         //Déclaration de la variable de récupération du localstorage
         let savedProductStorage = JSON.parse(localStorage.getItem("cart"));
-
+        
         //Fonction permettant d'éviter un doulon et des répétitions avec la même id/couleur dans le tableau donc dans le localstorage
         function noDoublons(array) {
             return array.reduce(function (p, keyName) {
               var keys = [keyName.id, keyName.colors].join('|');
-              let keyQuantity = [keyName.quantity];
               if (p.temp.indexOf(keys) === -1) {
                 p.out.push(keyName);
                 p.temp.push(keys);
-                keyQuantity += savedProductStorage.quantity;
               }
               return p;
             }, { temp: [], out: [] }).out;
           }
         
         //Conditions pour voir si le produit est déjà dans le panier ou pas avec la fonction Nodoublons
-        if(savedProductStorage){  
+        if(savedProductStorage){
+            let foundProduct = savedProductStorage.find(p => p.id == arrayCart.id && p.colors == arrayCart.colors);
+            if(foundProduct != undefined){
+                foundProduct.quantity = parseInt(foundProduct.quantity) + parseInt(arrayCart.quantity);
+            }
             savedProductStorage.push(arrayCart);
             localStorage.setItem("cart", JSON.stringify(noDoublons(savedProductStorage)));
         }
