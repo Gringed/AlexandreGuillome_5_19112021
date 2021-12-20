@@ -79,6 +79,7 @@ function addCart(){
     //On ajoute au panier grâce au bouton "ajouter"
     let addToCart = document.getElementById("addToCart");
     addToCart.addEventListener("click", () => {
+        
         //On créer l'objet qui va contenir les valeurs du produit pour l'ajout au panier
         let arrayCart = {
             name: data.name,
@@ -89,6 +90,7 @@ function addCart(){
             quantity: inputQuantity,
         };
         
+       
         //Déclaration de la variable de récupération du localstorage
         let savedProductStorage = JSON.parse(localStorage.getItem("cart"));
         
@@ -104,7 +106,7 @@ function addCart(){
             }, { temp: [], out: [] }).out;
           }
         
-        //Conditions pour voir si le produit est déjà dans le panier ou pas avec la fonction Nodoublons
+        //Conditions pour voir si le produit est déjà dans le panier ou pas 
         if(savedProductStorage){
             let foundProduct = savedProductStorage.find(p => p.id == arrayCart.id && p.colors == arrayCart.colors);
             if(foundProduct != undefined){
@@ -122,7 +124,8 @@ function addCart(){
         
         //Affichage de l'ajout panier dans la console
         console.log(arrayCart)    
-        confirmCart();  
+        confirmCart();
+        
     })     
 })
 }
